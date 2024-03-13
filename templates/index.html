@@ -18,11 +18,11 @@
              </div>
            </div>
            <div class="card-body">
-             <form method="post" action="#" accept-charset="utf-8">
+             <form method="post"  accept-charset="utf-8">
 
                <div class="col-10 form-group " style = "text-align: center">
                  <label><b>Select Company : </b></label>
-                 <select class="selectpicker form-control " id="company" name="companpy" required="1" onchange="load_car_model(this.id,'car_model')" onclick="company_options()">
+                 <select class="selectpicker form-control " id="company" name="company" required="1" onchange="load_car_model(this.id,'car_model')"  >
                      <option  > Select </option>
 <!--                   {% for company in companies %}-->
 <!--                 <option value="{{ company }}">{{ company }}<option>-->
@@ -41,7 +41,7 @@
 
                 <div class="col-10 form-group " style = "text-align: center">
                  <label><b>Select Year of Purchase : </b></label>
-                 <select class="selectpicker form-control " id="year" name="year" required="1" onclick="year_options()">
+                 <select class="selectpicker form-control " id="year" name="year" required="1" >
                  <option value="">Select </option>
 
                  </select>
@@ -50,7 +50,7 @@
 
                <div class="col-10 form-group " style = "text-align: center">
                  <label><b>Select Fuel Type : </b></label>
-                 <select class="selectpicker form-control " id="fuel_type" name="fuel_type" required="1" onclick="fuel_type_options()">
+                 <select class="selectpicker form-control " id="fuel_type" name="fuel_type" required="1" >
                  <option  >Select</option>
                  </select>
                </div>
@@ -62,11 +62,18 @@
 
 
                 <div class="col-10 form-group " style = "text-align: center">
-                <button class="btn btn-primary form-control " onclick="">Predict Price </button>
+                <button class="btn btn-primary form-control " onclick="send_data()">Predict Price </button>
                </div>
 
 
              </form>
+
+               <br>
+               <div class="row">
+                   <div class="col-12 " style="text-align:center">
+                       <h3><span id="prediction"></span></h3>
+                   </div>
+               </div>
            </div>
          </div>
        </div>
@@ -74,8 +81,11 @@
 
 <script>
 
+
+
     function company_options(){
     let company = document.getElementById('company');
+
     {% for company in companies  %}
           var newOption = document.createElement("option");
           newOption.value = "{{ company }}";
@@ -84,8 +94,11 @@
           {% endfor %}
     }
 
+    company_options();
+
     function year_options(){
     let year = document.getElementById('year');
+
     {% for year in years  %}
           var newOption = document.createElement("option");
           newOption.value = "{{ year }}";
@@ -94,8 +107,11 @@
           {% endfor %}
     }
 
+    year_options();
+
     function fuel_type_options(){
     let fuel_type = document.getElementById('fuel_type');
+
     {% for fuel_type in fuel_types  %}
           var newOption = document.createElement("option");
           newOption.value = "{{ fuel_type }}";
@@ -103,6 +119,7 @@
           fuel_type.options.add(newOption);
           {% endfor %}
     }
+    fuel_type_options();
 
          function load_car_model(id,car_model_id){
          let company = document.getElementById(id);
@@ -127,6 +144,42 @@
           }
           {% endfor %}
          }
+
+     </script>
+
+     <script>
+
+
+
+
+
+
+         function form_handler(event){
+         event.preventDefault();
+         }
+
+         function send_data(){
+         document.querySelector('form').addEventListener('submit',form_handler);
+         let fd = new FormData(document.querySelector('form'));
+         let xhr = new XMLHttpRequest();
+         xhr.open('POST','/predict',true);
+         document.getElementById("prediction").innerHTML = "Wait ! We are Predicting the Price ....  ";
+         xhr.onreadystatechange = function(){
+         if(xhr.readyState == XMLHttpRequest.DONE){
+         document.getElementById("prediction").innerHTML = "Prediction : Rs.   " + xhr.responseText;
+         }
+         }
+         xhr.onload = function(){};
+         xhr.send(fd);
+         }
+
+
+
+
+
+
+
+
      </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
